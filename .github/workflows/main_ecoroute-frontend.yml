@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     permissions:
       contents: read #This is required for actions/checkout
 
@@ -28,7 +28,7 @@ jobs:
           npm install
           npm run build --if-present
           npm run test --if-present
-      
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
@@ -51,13 +51,13 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_B4B8E84C58D94E258486474C8E367603 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_05308D708DAF4FD1B50BC5838E8FBDCF }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_41374EA754084B12825A49DD97B16592 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_1BC9A4B4F7584C82954F4FBDFE42265A }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_32BFAA8215D54BF7AC9033AE2D71DCD2 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_EAD21AB3514F4E3FA0F49F7B76144950 }}
 
       - name: 'Deploy to Azure Web App'
-        uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
         with:
           app-name: 'ecoroute-frontend'
           slot-name: 'Production'
