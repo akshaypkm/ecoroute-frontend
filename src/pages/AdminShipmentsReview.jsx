@@ -466,6 +466,10 @@ const handleApproveGroup = (group) => {
                             <span className="block text-xs uppercase text-gray-400">CO2e</span>
                             {ship.orderCO2Emission?.toFixed(2)} kg
                           </div>
+                          <div>
+                            <span className="block text-xs uppercase text-gray-400">Company Name</span>
+                            {ship.companyName}
+                          </div>
                         </div>
                       )}
                     </div>
