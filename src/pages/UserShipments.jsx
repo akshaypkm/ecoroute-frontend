@@ -5,6 +5,10 @@ import api from "../api/api"; // Ensure axios instance is imported
 import Sidebar from "../Components/UserSideBar"; // Assuming you want the sidebar here too
 
 export default function UserShipments() {
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
+
   const [loading, setLoading] = useState(true);
   const [shipments, setShipments] = useState([]);
   //notification and logout 
@@ -62,6 +66,10 @@ export default function UserShipments() {
     fetchHistory();
   }, [orderPeriod]); // Refetch when period changes
 
+  useEffect(() => {
+  setCurrentPage(1);
+}, [filters, orderPeriod]);
+
   // --- 2. Handle Frontend Filtering ---
   const handleFilterChange = (e) => {
     setFilters((prev) => ({
@@ -88,6 +96,13 @@ export default function UserShipments() {
 
     return matchStatus && matchSearch;
   });
+
+  const totalPages = Math.ceil(filteredShipments.length / ITEMS_PER_PAGE);
+
+  const paginatedShipments = filteredShipments.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   // Helper for Status Colors
   const getStatusColor = (status) => {
@@ -261,7 +276,7 @@ export default function UserShipments() {
                   ) : filteredShipments.length === 0 ? (
                     <tr><td colSpan="9" className="py-8 text-center text-gray-500">No shipments found.</td></tr>
                   ) : (
-                    filteredShipments.map((row, index) => (
+                      paginatedShipments.map((row, index) => (
                       <tr key={index} className="hover:bg-emerald-50/60 transition">
                         <td className="px-4 py-3 font-semibold text-emerald-600">{row.shipmentCode || "N/A"}</td>
                         <td className="text-gray-600">
@@ -299,8 +314,32 @@ export default function UserShipments() {
 
             {/* --- FOOTER TEXT --- */}
             <p className="text-sm text-gray-500 mt-4">
-              Showing {filteredShipments.length} results
+              Showing {paginatedShipments.length} of {filteredShipments.length} results
             </p>
+
+            <div className="flex justify-between items-center mt-4">
+              <p className="text-sm text-gray-600">
+                Page {currentPage} of {totalPages || 1}
+              </p>
+
+              <div className="flex gap-2">
+                <button
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage(p => p - 1)}
+                  className="px-3 py-1 rounded-lg border disabled:opacity-50"
+                >
+                  Prev
+                </button>
+
+                <button
+                  disabled={currentPage === totalPages || totalPages === 0}
+                  onClick={() => setCurrentPage(p => p + 1)}
+                  className="px-3 py-1 rounded-lg border disabled:opacity-50"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
 
             {/* --- Pagination (Visual Only for now) --- */}
             {/* <div className="flex items-center justify-center gap-2 mt-4">

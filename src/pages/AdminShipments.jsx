@@ -5,6 +5,9 @@ import { useNavigate } from "react-router-dom";
 
 export default function AdminShipments() {
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
+
   const [shipments, setShipments] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -50,6 +53,10 @@ export default function AdminShipments() {
       [e.target.name]: e.target.value,
     }));
   };
+
+  useEffect(() => {
+  setCurrentPage(1);
+}, [filters]);
 
   const normalizedCompanies = shipments.flatMap(s => {
   if (!s.companyName) return [];
@@ -103,6 +110,13 @@ const uniqueUsers = [...new Set(normalizedCompanies)];
    return matchUser && matchShipmentMode && matchPeriod;
 
   });
+
+  const totalPages = Math.ceil(filteredShipments.length / ITEMS_PER_PAGE);
+
+  const paginatedShipments = filteredShipments.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   // 🔹 LOADING STATE
   if (loading) {
@@ -254,7 +268,7 @@ const uniqueUsers = [...new Set(normalizedCompanies)];
           </tr>
         )}
 
-        {filteredShipments.map((s, index) => (
+        {paginatedShipments.map((s, index) => (
             <tr key={`${s.shipmentId}-${index}`}>
             <td className="px-4 py-3 font-medium">{s.shipmentCode}</td>
             <td className="px-4 py-3">
@@ -293,6 +307,30 @@ const uniqueUsers = [...new Set(normalizedCompanies)];
       </tbody>
     </table>
   </div>
+
+  <div className="flex justify-between items-center mt-4">
+  <p className="text-sm text-gray-600">
+    Page {currentPage} of {totalPages}
+  </p>
+
+  <div className="flex gap-2">
+    <button
+      disabled={currentPage === 1}
+      onClick={() => setCurrentPage(p => p - 1)}
+      className="px-3 py-1 rounded-lg border disabled:opacity-50"
+    >
+      Prev
+    </button>
+
+    <button
+      disabled={currentPage === totalPages}
+      onClick={() => setCurrentPage(p => p + 1)}
+      className="px-3 py-1 rounded-lg border disabled:opacity-50"
+    >
+      Next
+    </button>
+  </div>
+</div>
 </section>
 
         </div>
