@@ -38,7 +38,8 @@ function decodePolyline(encoded) {
 
 export default function RouteMap({ encodedPolyline, routeStops = [] }) {
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: "AIzaSyAT3JLAYrONL07aN7lyWPdTfnGg-MyGZZ8",
+    googleMapsApiKey:  import.meta.env.VITE_GOOGLE_MAPS_API_KEY
+    // googleMapsApiKey: "AIzaSyAT3JLAYrONL07aN7lyWPdTfnGg-MyGZZ8",
   });
 
   const [map, setMap] = useState(null);
