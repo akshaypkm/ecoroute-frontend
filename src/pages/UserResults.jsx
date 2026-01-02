@@ -214,11 +214,11 @@ export default function UserResults() {
                       <div className="flex items-center gap-6">
                         
                         {/* Radio Indicator */}
-                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center
+                        {/* <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center
                           ${isSelected ? 'border-emerald-500' : 'border-gray-300'}
                         `}>
                           {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-white/70"></div>}
-                        </div>
+                        </div> */}
 
                         {/* Summary Info */}
                         <div>
@@ -248,10 +248,15 @@ export default function UserResults() {
                               <span className="material-symbols-outlined text-[16px]">schedule</span> 
                               {(quote.routeDuration / 60).toFixed(0)} mins
                             </span>
+                            <span className="flex items-center gap-1  text-blue-500 text-truncate max-w-[500px]">
+                              <span className="material-symbols-outlined text-[16px]">alt_route</span> 
+                              Costs you: {(quote.orderCO2Emission / 1000).toFixed(4)} emission credits
+                            </span>
                             <span className="flex items-center gap-1  text-orange-500 text-truncate max-w-[500px]">
                               <span className="material-symbols-outlined text-[16px]">alt_route</span> 
                               Via {quote.selectedRouteSummary}
                             </span>
+                            
                           </div>
                         </div>
                       </div>
