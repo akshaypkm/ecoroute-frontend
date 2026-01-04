@@ -268,7 +268,7 @@ export default function UserShipments() {
                 >
                   <option value="day">This Day</option>
                   <option value="month">This Month</option>
-                  <option value="year">This Year</option>
+                  <option value="past 12 months">Past 12 months</option>
                 </select>
               </div>
 

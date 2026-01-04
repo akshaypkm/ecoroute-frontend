@@ -83,7 +83,8 @@ export default function UserResults() {
       orderOrigin: request.orderOrigin || request.origin,
       orderDestination: request.orderDestination || request.destination,
       shipmentDate: request.shipmentDate || new Date().toISOString(),
-      orderStandardCO2Emissions : standardEmissions
+      orderStandardCO2Emissions : standardEmissions,
+      companyRemainingCredits : request.companyRemainingCredits
     };
 
     try {
@@ -285,8 +286,12 @@ export default function UserResults() {
                               {(quote.routeDuration / 60).toFixed(0)} mins
                             </span>
                             <span className="flex items-center gap-1  text-blue-500 text-truncate max-w-[500px]">
-                              <span className="material-symbols-outlined text-[16px]">alt_route</span> 
+                              <span className="material-symbols-outlined text-[16px]">currency_rupee</span> 
                               Costs you: {(quote.orderCO2Emission / 1000).toFixed(4)} emission credits
+                            </span>
+                            <span className="flex items-center gap-1  text-red-500 text-truncate max-w-[500px]">
+                              <span className="material-symbols-outlined text-[16px]">currency_rupee_circle</span> 
+                              Remaining credits you'll have: {(quote.companyRemainingCredits - (quote.orderCO2Emission / 1000)).toFixed(3)}
                             </span>
                             <span className="flex items-center gap-1  text-orange-500 text-truncate max-w-[500px]">
                               <span className="material-symbols-outlined text-[16px]">alt_route</span> 
