@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import api from "../api/api";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +19,11 @@ export default function AuthPage() {
   const [fpPassword, setFpPassword] = useState("");
   const [fpLoading, setFpLoading] = useState(false);
   const [fpError, setFpError] = useState("");
+
+  const [companyNames, setCompanyNames] = useState([]);
+  const [companyLoading, setCompanyLoading] = useState(false);
+
+
   const resetForgotPasswordState = () => {
     setFpStep(1);
     setFpEmail("");
@@ -147,6 +152,22 @@ const verifyOtp = async () => {
     setOtpLoading(false);
   }
 };
+
+useEffect(() => {
+  const fetchCompanyNames = async () => {
+    try {
+      setCompanyLoading(true);
+      const res = await api.get("/auth/get-companynames");
+      setCompanyNames(res.data || []);
+    } catch (err) {
+      console.error("Failed to load company names");
+    } finally {
+      setCompanyLoading(false);
+    }
+  };
+
+  fetchCompanyNames();
+}, []);
 
 
   return (
@@ -368,10 +389,16 @@ const verifyOtp = async () => {
                     className="w-full border rounded-xl px-5 py-3"
                   >
                     <option value="">Select Company</option>
-                    <option value="EcoRoute Admin Corp">EcoRoute Admin</option>
-                    <option value="FedEx">FedEx</option>
-                    <option value="Delhivery">Delhivery</option>
 
+                      {companyLoading ? (
+                        <option disabled>Loading companies...</option>
+                      ) : (
+                        companyNames.map((name) => (
+                          <option key={name} value={name}>
+                            {name}
+                          </option>
+                        ))
+                      )}
 
                   </select>
                 ) : (

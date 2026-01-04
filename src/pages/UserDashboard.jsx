@@ -23,7 +23,7 @@ export default function ClientDashboard() {
   // --- Filters State ---
   const [emissionPeriod, setEmissionPeriod] = useState("Month");
   const [shipmentPeriod, setShipmentPeriod] = useState("Month");
-  const [savingsPeriod, setSavingsPeriod] = useState("Year");
+  const [savingsPeriod, setSavingsPeriod] = useState("Past 12 months");
 
   // --- UI State ---
   const [tradeSection, setTradeSection] = useState(null); // 'buy', 'sell', or null
@@ -160,7 +160,11 @@ if (usagePercent > 50 && usagePercent <= 75) {
   };
 
   // --- Chart Config ---
-  const labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const labels = Array.from({ length: 12 }, (_, i) => {
+    const d = new Date();
+    d.setMonth(d.getMonth() - (11 - i));
+    return d.toLocaleString("default", { month: "short" });
+  });
   
   // Map API graphData to Chart
   const chartData = {
@@ -311,7 +315,7 @@ useEffect(() => {
               <p className="text-4xl font-bold mt-3 text-gray-900">{stats.totalEmissions.toFixed(2)} kg CO₂e</p>
 
               <div className="mt-4 flex gap-2">
-                {['Today', 'Month', 'Year'].map(p => (
+                {['Today', 'Month', 'Past 12 months'].map(p => (
                   <button 
                     key={p}
                     onClick={() => setEmissionPeriod(p)}
@@ -336,7 +340,7 @@ useEffect(() => {
               <p className="text-4xl font-bold mt-3 text-gray-900">{stats.shipments}</p>
 
               <div className="mt-4 flex gap-2">
-                {['Today', 'Month', 'Year'].map(p => (
+                {['Today', 'Month', 'Past 12 months'].map(p => (
                   <button 
                     key={p}
                     onClick={() => setShipmentPeriod(p)}
@@ -474,7 +478,7 @@ useEffect(() => {
             <div className="bg-white/60 backdrop-blur-2xl relative overflow-hidden border border-white/30 p-6 lg:col-span-2 rounded-3xl shadow-2xl">
               <h2 className="text-lg font-semibold flex items-center gap-2 text-green-700">
                 <span className="material-symbols-outlined bg-gradient-to-r from-lime-500 to-emerald-600 bg-clip-text text-transparent">bar_chart</span>
-                CO2e Month Wise Emissions
+                CO₂e Month Wise Emissions (Past 12 Months)
               </h2>
               <div className="h-80 w-full">
                 <Bar data={chartData} options={chartOptions} />
@@ -524,7 +528,7 @@ useEffect(() => {
                 <p className="text-3xl font-bold mt-3 text-gray-900">{stats.emissionsSaved.toFixed(2)} kg CO₂e</p>
 
                 <div className="mt-4 flex gap-2">
-                  {['Today', 'Month', 'Year'].map(p => (
+                  {['Today', 'Month', 'Past 12 months'].map(p => (
                     <button 
                       key={p}
                       onClick={() => setSavingsPeriod(p)}

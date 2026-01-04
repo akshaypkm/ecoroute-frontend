@@ -21,7 +21,7 @@ export default function AdminDashboard() {
   // Filters (matching controller params)
   const [emissionsPeriod, setEmissionsPeriod] = useState("month");
   const [shipmentsPeriod, setShipmentsPeriod] = useState("month");
-  const [emissionSavedPeriod, setEmissionSavedPeriod] = useState("year");
+  const [emissionSavedPeriod, setEmissionSavedPeriod] = useState("Past 12 months");
   //notification and log out 
   const navigate = useNavigate();
   const [isNotifOpen, setIsNotifOpen] = useState(false);
@@ -80,19 +80,27 @@ export default function AdminDashboard() {
     fetchStats();
   }, [emissionsPeriod, shipmentsPeriod, emissionSavedPeriod]);
 
+
+  const labels = Array.from({ length: 12 }, (_, i) => {
+  const d = new Date();
+  d.setMonth(d.getMonth() - (11 - i));
+  return d.toLocaleString("default", { month: "short" });
+});
   // --- Chart Config ---
   const chartData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], // Static or dynamic based on data
+    labels,
     datasets: [
-      {
-        label: "CO2e (kg CO₂e)",
-        data: stats.graphData?.length > 0 ? stats.graphData : [0, 0, 0, 0, 0, 0, 0,0,0,0,0,0],
-        backgroundColor: "rgba(74, 144, 226, 0.6)", // Primary Blue #4A90E2 with opacity
-        borderColor: "#4A90E2",
-        borderWidth: 1,
-        borderRadius: 4,
-        hoverBackgroundColor: "#4A90E2",
-      },
+    {
+      label: "CO2e (kg CO₂e)",
+      data: stats.graphData?.length === 12
+        ? stats.graphData
+        : Array(12).fill(0),
+      backgroundColor: "rgba(74, 144, 226, 0.6)",
+      borderColor: "#4A90E2",
+      borderWidth: 1,
+      borderRadius: 4,
+      hoverBackgroundColor: "#4A90E2",
+    },
     ],
   };
 
@@ -202,7 +210,7 @@ export default function AdminDashboard() {
                 {stats.totalCO2Emissions.toFixed(2)} kg CO₂e</p>
           {/* Period Filter */}
           <div className="mt-4 flex gap-2">
-            {['today', 'month', 'year'].map(p => (
+            {['today', 'month', 'Past 12 months'].map(p => (
               <button
               key={p}
               onClick={() => setEmissionsPeriod(p)}
@@ -231,7 +239,7 @@ export default function AdminDashboard() {
               </p>
               {/* Period Filter */}
               <div className="mt-4 flex gap-2">
-                {['today', 'month', 'year'].map(p => (
+                {['today', 'month', 'Past 12 months'].map(p => (
                   <button
                   key={p}
                   onClick={() => setShipmentsPeriod(p)}
@@ -271,7 +279,7 @@ export default function AdminDashboard() {
                 </p>
             {/* Filter Toggle (same logic, new style) */}
             <div className="mt-4 flex gap-2">
-              {['today', 'month', 'year'].map(p => (
+              {['today', 'month', 'Past 12 months'].map(p => (
                 <button
                 key={p}
                 onClick={() => setEmissionSavedPeriod(p)}
@@ -291,8 +299,8 @@ export default function AdminDashboard() {
           <h2 className="text-lg font-semibold flex items-center gap-2 text-blue-700">
             <span className="material-symbols-outlined bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 bg-clip-text text-transparent">
               bar_chart
-              </span>CO2e Emissions by Month</h2>
-              <p className="text-gray-500 text-sm mt-1">Last 12 months emission trend</p>
+              </span>CO₂e Emissions by Month (Past 12 Months)</h2>
+              {/* <p className="text-gray-500 text-sm mt-1">Last 12 months emission trend</p> */}
               {/* Chart */}
               <div className="mt-4 h-[300px] w-full">
                 <Bar data={chartData} options={chartOptions} />
