@@ -552,7 +552,7 @@ useEffect(() => {
 
                   {/* Refrigerated */}
                   <div>
-                    <label className="text-sm font-medium text-gray-700">If product refrigerated:</label>
+                    <label className="text-sm font-medium text-gray-700">If needs product refrigeration:</label>
                     <div className="flex gap-2 mt-1">
                       <button
                         onClick={() => setRefrigerated("Yes")}

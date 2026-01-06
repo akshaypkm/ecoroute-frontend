@@ -252,7 +252,7 @@ const uniqueUsers = [...new Set(normalizedCompanies)];
           <th className="px-4 py-3">Destination</th>
           <th className="px-4 py-3">Shipment Mode</th>
           <th className="px-4 py-3">Total Units</th>
-          <th className="px-4 py-3">CO₂ (kg)</th>
+          <th className="px-4 py-3">CO₂e (kg)</th>
           <th className="px-4 py-3">Status</th>
         </tr>
       </thead>

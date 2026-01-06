@@ -365,7 +365,7 @@ useEffect(() => {
 
               <div className="mt-4 space-y-2">
                 <div className="flex justify-between items-center">
-                  <p className="text-gray-500 text-sm">Market Price</p>
+                  <p className="text-gray-500 text-sm">Market Price per Credit</p>
                   <p className="text-xl font-semibold">Rs {stats.creditMarketPrice}</p>
                 </div>
                 <div className="flex justify-between items-center">

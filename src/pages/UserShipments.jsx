@@ -251,7 +251,7 @@ export default function UserShipments() {
                   name="search"
                   value={filters.search}
                   onChange={handleFilterChange}
-                  placeholder="Search by ID, Origin, Destination..."
+                  placeholder="Search by Origin, Destination..."
                   className="w-full px-4 py-3 rounded-xl cursor-pointer bg-white/80 backdrop-blur-xl border border-emerald-200
                 text-gray-700 font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-400"
                 />

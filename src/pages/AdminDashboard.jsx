@@ -204,7 +204,7 @@ export default function AdminDashboard() {
            {/* Header */}
            <h2 className="text-lg font-semibold flex items-center gap-2 text-blue-700">
             <span className="material-symbols-outlined bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 bg-clip-text text-transparent">
-              co2</span>Total CO2e tracked</h2>
+              co2</span>Total CO₂e tracked</h2>
               {/* Value */}
               <p className="text-4xl font-bold mt-3 text-gray-900">
                 {stats.totalCO2Emissions.toFixed(2)} kg CO₂e</p>
@@ -258,7 +258,7 @@ export default function AdminDashboard() {
             {/* Header */}
             <h2 className="text-lg font-semibold flex items-center gap-2 text-blue-700">
               <span className="material-symbols-outlined bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 bg-clip-text text-transparent">
-                api</span>Total Orders for Review</h2>
+                api</span>Orders Waiting for Review</h2>
               {/* Main Value */}
               <p className="text-4xl font-bold mt-3 text-gray-900">
               {stats.totalOrdersForReview ?? 0}</p>
