@@ -18,7 +18,6 @@ export default function AdminPanel() {
 
       <main>
         <p>Admin features: update emission factors, view calculations, manage users.</p>
-        {/* Add admin controls */}
       </main>
     </div>
   );

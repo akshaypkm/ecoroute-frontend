@@ -12,17 +12,14 @@ import {
   Legend,
 } from "chart.js";
 
-// Register ChartJS
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
 
-  // Filters (matching controller params)
   const [emissionsPeriod, setEmissionsPeriod] = useState("month");
   const [shipmentsPeriod, setShipmentsPeriod] = useState("month");
   const [emissionSavedPeriod, setEmissionSavedPeriod] = useState("Past 12 months");
-  //notification and log out 
   const navigate = useNavigate();
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -43,11 +40,8 @@ export default function AdminDashboard() {
 
 
 
-  // The controller asks for EmissionsSavedPeriod, but HTML shows "API Calls/Clients".
-  // We'll keep this state in case we need to filter the 3rd/4th cards.
   const [generalPeriod, setGeneralPeriod] = useState("month"); 
 
-  // Data State
   const [stats, setStats] = useState({
     totalCO2Emissions: 0,
     totalShipments: 0,
@@ -61,12 +55,11 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        // GET /api/admin-dashboard/stats?EmissionsPeriod=...
         const res = await api.get("/admin-dashboard/stats", {
           params: {
             EmissionsPeriod: emissionsPeriod,
             ShipmentsPeriod: shipmentsPeriod,
-            EmissionsSavedPeriod: emissionSavedPeriod, // passing to backend as requested
+            EmissionsSavedPeriod: emissionSavedPeriod, 
           },
         });
         setStats(res.data);
@@ -86,7 +79,6 @@ export default function AdminDashboard() {
   d.setMonth(d.getMonth() - (11 - i));
   return d.toLocaleString("default", { month: "short" });
 });
-  // --- Chart Config ---
   const chartData = {
     labels,
     datasets: [
@@ -138,15 +130,12 @@ export default function AdminDashboard() {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-emerald-100 via-teal-100 to-blue-200 overflow-hidden">
       
-      {/* 1. Admin Sidebar */}
       <AdminSidebar />
 
-      {/* 2. Main Content */}
       <main className="flex-1 ml-0 md:ml-[250px] px-6 py-6 overflow-y-auto">
         
         <div className="space-y-6">
           
-          {/* Page Heading */}
           <header className="flex justify-between items-center mb-8">
             <h2 className="text-4xl font-extrabold bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 bg-clip-text text-transparent">
               Admin Dashboard</h2>
@@ -173,7 +162,6 @@ export default function AdminDashboard() {
                         </div>
                       )}
                       </div>
-                {/* Profile */}
                 <div className="relative">
                   <button
                   className="p-2 rounded-full hover:bg-blue-100 transition"
@@ -196,19 +184,14 @@ export default function AdminDashboard() {
                   </div>
                 </header>
               <p className="text-gray-500 text-base font-normal">Overview of platform metrics and carbon footprint.</p>
-          {/* Stats Grid */}
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             
-           {/* Card: Total CO2e Tracked */}
            <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/30 p-6">
-           {/* Header */}
            <h2 className="text-lg font-semibold flex items-center gap-2 text-blue-700">
             <span className="material-symbols-outlined bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 bg-clip-text text-transparent">
               co2</span>Total CO₂e tracked</h2>
-              {/* Value */}
               <p className="text-4xl font-bold mt-3 text-gray-900">
                 {stats.totalCO2Emissions.toFixed(2)} kg CO₂e</p>
-          {/* Period Filter */}
           <div className="mt-4 flex gap-2">
             {['today', 'month', 'Past 12 months'].map(p => (
               <button
@@ -224,20 +207,16 @@ export default function AdminDashboard() {
             </div>
 
 
-            {/* Card: Total Shipments */}
            <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/30 p-6">
-           {/* Header */}
            <h2 className="text-lg font-semibold flex items-center gap-2 text-blue-700">
             <span className="material-symbols-outlined bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 bg-clip-text text-transparent">
               local_shipping
               </span>
               Total Shipments
               </h2>
-            {/* Value */}
             <p className="text-4xl font-bold mt-3 text-gray-900">
               {stats.totalShipments}
               </p>
-              {/* Period Filter */}
               <div className="mt-4 flex gap-2">
                 {['today', 'month', 'Past 12 months'].map(p => (
                   <button
@@ -253,31 +232,23 @@ export default function AdminDashboard() {
                 </div>
             </div>
 
-            {/* Card: Total Orders for Review */}
             <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/30 p-6">
-            {/* Header */}
             <h2 className="text-lg font-semibold flex items-center gap-2 text-blue-700">
               <span className="material-symbols-outlined bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 bg-clip-text text-transparent">
                 api</span>Orders Waiting for Review</h2>
-              {/* Main Value */}
               <p className="text-4xl font-bold mt-3 text-gray-900">
               {stats.totalOrdersForReview ?? 0}</p>
-            {/* Subtext */}
             <p className="mt-2 text-sm text-blue-600 font-medium">
               {stats.soFarReviewedCount ?? 0} shipment(s) reviewed so far</p>
             </div>
 
-            {/* Card: Total Emissions Saved */}
             <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/30 p-6">
-            {/* Header */}
             <h2 className="text-lg font-semibold flex items-center gap-2 text-blue-700">
               <span className="material-symbols-outlined bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 bg-clip-text text-transparent">eco</span>
               Total Emissions Saved</h2>
-              {/* Main Value */}
               <p className="text-4xl font-bold mt-3 text-gray-900">
                 {stats.totalEmissionsSaved.toFixed(2)} kg CO₂e
                 </p>
-            {/* Filter Toggle (same logic, new style) */}
             <div className="mt-4 flex gap-2">
               {['today', 'month', 'Past 12 months'].map(p => (
                 <button
@@ -293,7 +264,6 @@ export default function AdminDashboard() {
                 </div>
           </div>
 
-          {/* Chart Section */}
           <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/30 p-6">
           {/* Header */}
           <h2 className="text-lg font-semibold flex items-center gap-2 text-blue-700">
@@ -301,7 +271,6 @@ export default function AdminDashboard() {
               bar_chart
               </span>CO₂e Emissions by Month (Past 12 Months)</h2>
               {/* <p className="text-gray-500 text-sm mt-1">Last 12 months emission trend</p> */}
-              {/* Chart */}
               <div className="mt-4 h-[300px] w-full">
                 <Bar data={chartData} options={chartOptions} />
                 </div>

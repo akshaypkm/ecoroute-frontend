@@ -40,7 +40,6 @@ export default function AuthPage() {
   
 
 
-  //password regex: at least 6 characters, one uppercase, one lowercase, one number, one special character
   const validatePassword = (password) => {
     return (
       password.length >= 6 &&
@@ -173,12 +172,9 @@ useEffect(() => {
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-[2.5fr_1.5fr] font-sans">
 
-      {/* LEFT BRAND PANEL */}
       <div className="hidden md:flex relative overflow-hidden flex-col items-center justify-center
         bg-gradient-to-br from-lime-500 via-green-500 to-emerald-600 text-white p-20">
 
-        {/* SVG PATTERN (ADDED) */}
-{/* ECO LOGISTICS CONTINUOUS PATTERN */}
 <svg
   className="absolute inset-0 w-full h-full opacity-25"
   xmlns="http://www.w3.org/2000/svg"
@@ -241,7 +237,6 @@ useEffect(() => {
         </div>
       </div>
 
-      {/* RIGHT AUTH PANEL */}
       <div className="relative flex justify-center items-center bg-gray-50 px-6 md:px-10">
         <div
           className={`relative w-full max-w-3xl bg-white/70 backdrop-blur-xl
@@ -249,7 +244,6 @@ useEffect(() => {
           ${isLogin ? "p-10" : "p-10"}`}   // ONLY padding reduced for signup
         >
 
-          {/* TABS */}
           <div className="flex mb-6 border-b">
             <button
               className={`flex-1 py-3 text-xl font-bold ${
@@ -276,7 +270,6 @@ useEffect(() => {
             </button>
           </div>
 
-          {/* FORM */}
           <form
             onSubmit={handleSubmit}
             className={`space-y-${isLogin ? "6" : "4"}`} // tighter spacing for signup
@@ -445,7 +438,6 @@ useEffect(() => {
             )}
 
             
-             {/* ✅ FORGOT PASSWORD (LOGIN ONLY) */}
             {isLogin && (
               <div className="text-right text-sm">
                 <button
@@ -473,7 +465,6 @@ useEffect(() => {
             >
               {loading ? "Please wait..." : isLogin ? "Login" : "Create Account"}
             </button>
-            {/* ✅ LOGIN ↔ SIGNUP REDIRECT */}
             {isLogin ? (
               <div className="text-center text-sm">
                 Don’t have an account?{" "}
@@ -504,19 +495,16 @@ useEffect(() => {
   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
     <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 animate-in fade-in zoom-in-95">
 
-      {/* HEADER */}
       <h3 className="text-xl font-bold bg-gradient-to-r from-emerald-500 via-green-500 to-lime-600 bg-clip-text text-transparent mb-4">
         Forgot Password
       </h3>
 
-      {/* ERROR (INSIDE MODAL ONLY) */}
       {fpError && (
         <div className="mb-4 p-3 rounded-xl bg-red-50 text-red-600 text-sm">
           {fpError}
         </div>
       )}
 
-      {/* STEP 1 — EMAIL */}
       {fpStep === 1 && (
         <>
           <label className="block font-semibold mb-1">Registered Email</label>
@@ -557,7 +545,6 @@ useEffect(() => {
         </>
       )}
 
-      {/* STEP 2 — OTP */}
       {fpStep === 2 && (
         <>
           <label className="block font-semibold mb-1">Enter OTP</label>
@@ -596,7 +583,6 @@ useEffect(() => {
             Verify OTP
           </button>
 
-          {/* RESEND OTP (GREEN / EMERALD) */}
           <button
             type="button"
             onClick={async () => {
@@ -620,7 +606,6 @@ useEffect(() => {
         </>
       )}
 
-      {/* STEP 3 — RESET PASSWORD */}
       {fpStep === 3 && (
         <>
           <label className="block font-semibold mb-1">New Password</label>
@@ -655,14 +640,12 @@ useEffect(() => {
                   newPassword: fpPassword,
                 });
 
-                // RESET STATES
                 setShowForgot(false);
                 setFpStep(1);
                 setFpEmail("");
                 setFpOtp("");
                 setFpPassword("");
 
-                // SUCCESS MESSAGE ON LOGIN PAGE
                 setError("Password reset successful. Please login.");
                 setIsLogin(true);
               } catch (err) {
@@ -678,7 +661,6 @@ useEffect(() => {
         </>
       )}
 
-      {/* CANCEL */}
       <div className="text-right mt-4">
         <button
           onClick={() => {

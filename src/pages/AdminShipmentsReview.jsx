@@ -46,7 +46,6 @@ const normalShipments = shipments.filter(s => !(s.isAutoApproved || s.IsAutoAppr
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
 
-  // --- 1. Fetch Data from Backend ---
   useEffect(() => {
     const fetchShipments = async () => {
       try {
@@ -62,7 +61,6 @@ const normalShipments = shipments.filter(s => !(s.isAutoApproved || s.IsAutoAppr
     fetchShipments();
   }, []);
 
-  // --- 2. Action Handlers ---
 
 const handleCollapseAutoApproved = async () => {
   try {
@@ -196,16 +194,13 @@ const handleApproveGroup = (group) => {
 // };
 
 
-  // --- 3. Filter Logic ---
  const filteredShipments = normalShipments.filter((ship) => {
-    // Search by ID, Origin, or Destination
     const searchTerm = search.toLowerCase();
     const matchSearch = 
       (ship.orderId?.toString().toLowerCase().includes(searchTerm)) ||
       (ship.orderOrigin?.toLowerCase().includes(searchTerm)) ||
       (ship.orderDestination?.toLowerCase().includes(searchTerm));
 
-    // Filter by Status (Map backend status to UI options if needed)
     const matchStatus =
       statusFilter === "All" || 
       (ship.orderStatus && ship.orderStatus.toLowerCase() === statusFilter.toLowerCase());
@@ -213,7 +208,6 @@ const handleApproveGroup = (group) => {
     return matchSearch && matchStatus;
   });
 
-  // --- Helper: Calculate Emission Reduction ---
   const calculateReduction = (actual, standard) => {
     if (!standard || standard === 0) return 0;
     const reduction = ((standard - actual) / standard) * 100;
@@ -222,18 +216,14 @@ const handleApproveGroup = (group) => {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-emerald-100 via-teal-100 to-blue-200 overflow-hidden">
-      {/* SIDEBAR */}
       <AdminSidebar />
 
-      {/* MAIN CONTENT */}
       <main className="flex-1 ml-0 md:ml-[250px] px-6 py-6 overflow-y-auto">
         
-        {/* HEADER */}
         <div className="space-y-6">
           <header className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-extrabold bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 bg-clip-text text-transparent">Shipment Review</h1>
           <div className="flex items-center gap-4">
-                 {/* Notifications */}
                  <div className="relative">
                   <button
                   className="p-2 rounded-full hover:bg-blue-100 transition"
@@ -255,7 +245,6 @@ const handleApproveGroup = (group) => {
                         </div>
                       )}
                       </div>
-                {/* Profile */}
                 <div className="relative">
                   <button
                   className="p-2 rounded-full hover:bg-blue-100 transition"
@@ -280,9 +269,7 @@ const handleApproveGroup = (group) => {
           <p className="text-gray-500 mt-1">Review and approve pending shipments for carbon compliance</p>
         </div>
 
-        {/* FILTER BAR */}
         <div className="flex items-center gap-4 mb-8">
-          {/* SEARCH */}
           {!isImprovisedView && <div className="relative flex-1 max-w-lg">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
             <input
@@ -312,7 +299,6 @@ const handleApproveGroup = (group) => {
                   </div>
               )}
 
-          {/* STATUS FILTER */}
           {!isImprovisedView &&
           <select
             value={statusFilter}
@@ -324,7 +310,6 @@ const handleApproveGroup = (group) => {
           </select>}
         </div>
 
-        {/* SHIPMENT CARDS */}
         <div className="space-y-5">
           {loading && (
             <div className="text-center py-12 bg-white/70 backdrop-blur-2xl rounded-3xl border border-white/30 text-blue-600 font-medium shadow-lg">
@@ -340,21 +325,20 @@ const handleApproveGroup = (group) => {
             </div>
           )}
             
-          {/* AUTO-APPROVED ORDERS (TOP) */}
             {!loading && !isImprovisedView && autoApprovedShipments.length > 0 && (
               <div className="mb-8 bg-yellow-50 border border-yellow-200 rounded-3xl p-6">
               <div className="flex items-center justify-between mb-4">
-  <h2 className="text-lg font-bold text-yellow-700">
-    Auto-Approved Orders
-  </h2>
+                <h2 className="text-lg font-bold text-yellow-700">
+                  Auto-Approved Orders
+                </h2>
 
-  <button
-    onClick={handleCollapseAutoApproved}
-    className="px-4 py-2 text-sm rounded-lg bg-yellow-200 text-yellow-800 hover:bg-yellow-300"
-  >
-    Everything's Fine
-  </button>
-</div>
+                <button
+                  onClick={handleCollapseAutoApproved}
+                  className="px-4 py-2 text-sm rounded-lg bg-yellow-200 text-yellow-800 hover:bg-yellow-300"
+                >
+                  Everything's Fine
+                </button>
+              </div>
                 
                 {autoApprovedShipments.map((ship, index) => {
                   const autoId = `auto-${ship.orderId}`;
@@ -367,7 +351,6 @@ const handleApproveGroup = (group) => {
                         isOpen ? "ring-2 ring-yellow-400 shadow-lg" : "hover:shadow-md"
                       }`}
                     >
-                      {/* HEADER */}
                       <div
                         onClick={() => setOpenCard(isOpen ? null : autoId)}
                         className="px-6 py-4 flex justify-between items-center cursor-pointer"
@@ -386,7 +369,6 @@ const handleApproveGroup = (group) => {
                         </span>
                       </div>
 
-                      {/* EXPANDED */}
                       {isOpen && (
                         <div className="border-t px-6 py-5">
                           <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
@@ -396,7 +378,6 @@ const handleApproveGroup = (group) => {
                             <div><b>Vehicle:</b> {ship.transportVehicle}</div>
                           </div>
 
-                          {/* ACTIONS */}
                           <div className="flex justify-end gap-3">
                             <button
                               onClick={() => setOpenCard(null)}
@@ -420,12 +401,10 @@ const handleApproveGroup = (group) => {
               </div>
             )}
 
-           {/* NORMAL VIEW */}
            {!loading && !isImprovisedView &&
            filteredShipments.map((ship, index) => {
             const uniqueId = ship.orderId || `ship-${index}`;
             const isOpen = openCard === uniqueId;
-            // Calculate reduction if standard emissions exist
             const reduction = calculateReduction(ship.orderCO2Emission, ship.orderStandardCO2Emissions);
             const isPositiveReduction = reduction > 0;
             return (
@@ -435,7 +414,6 @@ const handleApproveGroup = (group) => {
               isOpen ? "ring-2 ring-blue-400 shadow-2xl" : "hover:shadow-xl"
             }`}
                 >
-            {/* CARD HEADER (Click to Expand) */}
                   <div
                     onClick={() => setOpenCard(isOpen ? null : uniqueId)}
                     className="px-6 py-5 flex justify-between items-center cursor-pointer select-none"
@@ -445,13 +423,12 @@ const handleApproveGroup = (group) => {
                       <div>
                         <p className="text-blue-600 font-bold text-lg">#{uniqueId}</p>
                         <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
-                          <span className="font-medium text-gray-700">{ship.orderOrigin}</span>
+                          <span className="font-medium text-gray-700">{ship.orderOrigin.toUpperCase()}</span>
                           <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
-                          <span className="font-medium text-gray-700">{ship.orderDestination}</span>
+                          <span className="font-medium text-gray-700">{ship.orderDestination.toUpperCase()}</span>
                         </div>
                       </div>
 
-                      {/* Quick Stats (Visible when collapsed) */}
                       {!isOpen && (
                         <div className="hidden md:flex gap-6 text-sm text-gray-500 border-l pl-6 ml-2">
                           <div>
@@ -479,7 +456,6 @@ const handleApproveGroup = (group) => {
                     </div>
 
                     <div className="flex items-center gap-4">
-                      {/* Status Badge */}
                       <span className={`px-3 py-1 text-xs font-bold uppercase tracking-wide rounded-full ${
                         ship.orderStatus === 'Pending' ? "bg-yellow-100 text-yellow-700" :
                         ship.orderStatus === 'Approved' ? "bg-green-100 text-green-700" :
@@ -488,19 +464,16 @@ const handleApproveGroup = (group) => {
                         {ship.orderStatus || "Unknown"}
                       </span>
                       
-                      {/* Chevron Icon */}
                       <span className={`material-symbols-outlined text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`}>
                         expand_more
                       </span>
                     </div>
                   </div>
 
-                  {/* EXPANDED VIEW */}
                   {isOpen && (
                     <div className="border-t border-gray-100 px-6 py-6 animate-in fade-in slide-in-from-top-2">
                       <div className="flex flex-col lg:flex-row gap-6">
                         
-                        {/* LEFT: MAP */}
                         <div className="flex-1 min-h-[300px] h-[350px] bg-gray-50 rounded-xl overflow-hidden border border-gray-200 relative">
                           {ship.selectedPolyline ? (
                             <RouteMap encodedPolyline={ship.selectedPolyline} />
@@ -511,7 +484,6 @@ const handleApproveGroup = (group) => {
                           )}
                         </div>
 
-                        {/* RIGHT: DETAILS */}
                         <div className="flex-1 flex flex-col justify-between">
                           <div className="grid grid-cols-2 gap-y-6 gap-x-4">
                             
@@ -551,9 +523,6 @@ const handleApproveGroup = (group) => {
                             </div>
                           </div>
 
-                          {/* ACTION BUTTONS */}
-                          
-                          
                             <div className="flex justify-end gap-3 mt-6 pt-6 border-t border-gray-100">
                             
                               <button
@@ -599,7 +568,6 @@ const handleApproveGroup = (group) => {
             isOpen ? "ring-2 ring-green-400 shadow-md" : "hover:shadow-md"
           }`}
         >
-          {/* GROUP HEADER */}
           <div
             onClick={() => setOpenCard(isOpen ? null : groupId)}
             className="px-6 py-5 flex justify-between items-center cursor-pointer"
@@ -618,7 +586,6 @@ const handleApproveGroup = (group) => {
             </span>
           </div>
 
-          {/* EXPANDED */}
           {isOpen && (
 
             
@@ -640,7 +607,6 @@ const handleApproveGroup = (group) => {
                   )}
                 </div>
 
-                {/* GROUP DETAILS */}
                 <div className="flex-1">
                   <div className="grid grid-cols-2 gap-4 mb-6">
                     <div>
@@ -657,20 +623,17 @@ const handleApproveGroup = (group) => {
                     </div>
                   </div>
 
-                  {/* ORDERS LIST */}
                   <div className="border rounded-lg divide-y">
                     {group.orders.map(order => (
                       <div
                         key={order.orderId}
                         className="p-3 text-sm flex justify-between items-center"
                       >
-                        {/* LEFT: Order info */}
                         <div>
                           <b>{order.orderCode}</b>{" "}
                           — {order.orderOrigin.toUpperCase()} → {order.orderDestination.toUpperCase()}
                         </div>
 
-                        {/* RIGHT: Company name */}
                         <div className="text-xs font-semibold text-gray-600 bg-gray-100 px-2 py-1 rounded">
                           {order.companyName || "Unknown Company"}
                         </div>
@@ -681,7 +644,6 @@ const handleApproveGroup = (group) => {
                   </div>
 
               </div>
-              {/* ACTION BUTTONS */}
                   <div className="flex justify-end gap-3 pt-6 border-t border-gray-100">
 
                     <button
@@ -759,14 +721,9 @@ const handleApproveGroup = (group) => {
   onConfirm={confirmBox.onConfirm}
 />
 
-
-
     </div>
-
     
   );
-
-
 }
 
 const ConfirmDialog = ({ open, title, message, onCancel, onConfirm }) => {

@@ -34,7 +34,6 @@ export default function AdminShipments() {
     period: "All Time",
   });
 
-  // 🔹 SINGLE BACKEND CALL
   useEffect(() => {
     api.get("/admin/shipments")
       .then((res) => {
@@ -61,7 +60,7 @@ export default function AdminShipments() {
   const normalizedCompanies = shipments.flatMap(s => {
   if (!s.companyName) return [];
 
-  // Convert to string, split by comma, trim spaces
+  // convert to string split by comma, trim spaces
   return s.companyName
     .toString()
     .split(",")
@@ -70,7 +69,6 @@ export default function AdminShipments() {
 
 const uniqueUsers = [...new Set(normalizedCompanies)];
 
-  // 🔹 FILTER LOGIC (Company + Status + Time Period)
   const filteredShipments = shipments.filter((s) => {
     const matchUser =
       filters.user === "All Users" ||
@@ -118,7 +116,6 @@ const uniqueUsers = [...new Set(normalizedCompanies)];
     currentPage * ITEMS_PER_PAGE
   );
 
-  // 🔹 LOADING STATE
   if (loading) {
     return <p className="p-8">Loading shipments...</p>;
   }
@@ -133,7 +130,6 @@ const uniqueUsers = [...new Set(normalizedCompanies)];
         <header className="flex justify-between items-center mb-8">
             <h1 className="text-4xl font-extrabold bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 bg-clip-text text-transparent">All Shipments</h1>
             <div className="flex items-center gap-4">
-                 {/* Notifications */}
                  <div className="relative">
                   <button
                   className="p-2 rounded-full hover:bg-blue-100 transition"
@@ -155,7 +151,6 @@ const uniqueUsers = [...new Set(normalizedCompanies)];
                         </div>
                       )}
                       </div>
-                {/* Profile */}
                 <div className="relative">
                   <button
                   className="p-2 rounded-full hover:bg-blue-100 transition"
@@ -179,15 +174,11 @@ const uniqueUsers = [...new Set(normalizedCompanies)];
         </header>
         <p className="page-subtitle">View and monitor all shipment emissions</p>
 
-        {/* FILTERS */}
         <section className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/30 p-6">
-        {/* Header */}
         <h2 className="text-lg font-semibold flex items-center gap-2 text-blue-700 mb-4">
           <span className="material-symbols-outlined bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 bg-clip-text text-transparent">
             filter_list</span>Filters</h2>
-            {/* Filters Row */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {/* COMPANY FILTER */}
               <select
                 className="px-4 py-2 rounded-xl border border-blue-200 bg-white/80 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
                 name="user"
@@ -201,7 +192,6 @@ const uniqueUsers = [...new Set(normalizedCompanies)];
                   </option>
                 ))}
               </select>
-            {/* STATUS FILTER */}
             <select
             className="px-4 py-2 rounded-xl border border-blue-200 bg-white/80 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
             name="shipmentMode"
@@ -211,7 +201,6 @@ const uniqueUsers = [...new Set(normalizedCompanies)];
               <option>Dedicated</option>
               <option>Shared</option>
               </select>
-            {/* TIME PERIOD FILTER */}
             <select
             className="px-4 py-2 rounded-xl border border-blue-200 bg-white/80 text-sm text-gray-700focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
             name="period"
@@ -226,10 +215,8 @@ const uniqueUsers = [...new Set(normalizedCompanies)];
           </section>
 
 
-       {/* TABLE */}
 <section className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/30 p-6">
 
-  {/* Header */}
   <h2 className="text-lg font-semibold flex items-center gap-2 text-blue-700 mb-4">
     <span className="material-symbols-outlined bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 bg-clip-text text-transparent">
       table_chart
@@ -237,12 +224,10 @@ const uniqueUsers = [...new Set(normalizedCompanies)];
     Shipment Registry
   </h2>
 
-  {/* Table Wrapper for Scroll */}
   <div className="overflow-x-auto rounded-2xl border border-blue-100">
 
     <table className="min-w-full text-sm text-left text-gray-700">
 
-      {/* Table Head */}
       <thead className="bg-gradient-to-r from-emerald-100 via-teal-100 to-blue-100 text-gray-700 text-xs uppercase">
         <tr>
           <th className="px-4 py-3">Shipment ID</th>
@@ -257,7 +242,6 @@ const uniqueUsers = [...new Set(normalizedCompanies)];
         </tr>
       </thead>
 
-      {/* Table Body */}
       <tbody className="bg-white/80 divide-y divide-blue-100">
 
         {filteredShipments.length === 0 && (
@@ -287,7 +271,6 @@ const uniqueUsers = [...new Set(normalizedCompanies)];
               {s.shipmentCO2Emission.toFixed(2)}
             </td>
 
-            {/* Status Badge */}
             <td className="px-4 py-3">
               <span className={`px-3 py-1 rounded-full text-xs font-semibold
                 ${

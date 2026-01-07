@@ -104,10 +104,8 @@ export default function RouteMap({ encodedPolyline, routeStops = [] }) {
         );
       })}
 
-       {/* FALLBACK MARKERS FOR SINGLE ORDER */}
       {routeStops.length === 0 && path.length > 1 && (
         <>
-          {/* START */}
           <Marker
             position={path[0]}
             label={{
@@ -125,7 +123,6 @@ export default function RouteMap({ encodedPolyline, routeStops = [] }) {
             }}
           />
 
-          {/* END */}
           <Marker
             position={path[path.length - 1]}
             label={{

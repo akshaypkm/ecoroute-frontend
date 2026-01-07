@@ -2,13 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../api/api";
 import Sidebar from "../Components/UserSideBar";
-import RouteMap from "../Components/RouteMap"; // Ensure this uses the FIXED version I gave you earlier
+import RouteMap from "../Components/RouteMap"; 
 import "../styles/UserDashboard.css";
 
 export default function UserResults() {
 
   const location = useLocation();
-  //notification and logout 
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
@@ -36,7 +35,6 @@ export default function UserResults() {
   const [loading, setLoading] = useState(false);
   
 
-  // Calculate Minimums for badges
   const minCO2 = quotes?.length > 0 ? Math.min(...quotes.map(q => q.totalCO2Emission || q.orderCO2Emission)) : 0;
   const minDuration = quotes?.length > 0 ? Math.min(...quotes.map(q => q.routeDuration)) : 0;
 
@@ -44,8 +42,6 @@ export default function UserResults() {
     if (!quotes || !request) {
       navigate("/carbon-quote-calculator");
     } else if (quotes.length > 0) {
-      // Auto-select the first (Best) route
-      // We sort the data first to ensure index 0 is always the sustainable one
       const sortedQuotes = [...quotes].sort((a, b) => {
         const co2A = a.totalCO2Emission || a.orderCO2Emission || 0;
         const co2B = b.totalCO2Emission || b.orderCO2Emission || 0;
@@ -59,13 +55,11 @@ export default function UserResults() {
     if (!selectedQuote) return alert("Please select a quote first.");
     setLoading(true);
 
-    // 1. Find the Fastest Route (Baseline for Standard Emissions)
-    // We assume the "Fastest" route represents the standard, non-optimized way.
+    
     const fastestQuote = quotes && quotes.length > 0 
       ? quotes.reduce((prev, current) => (prev.routeDuration < current.routeDuration) ? prev : current)
       : selectedQuote;
 
-    // 2. Extract CO2 from that fastest route
     const standardEmissions = fastestQuote.totalCO2Emission || fastestQuote.orderCO2Emission || 0;
 
     const orderPayload = {
@@ -105,7 +99,6 @@ export default function UserResults() {
 
   if (!quotes || !request) return null;
 
-  // Pre-sort quotes so Sustainable is always top
   const sortedQuotes = [...quotes].sort((a, b) => {
     const co2A = a.totalCO2Emission || a.orderCO2Emission || 0;
     const co2B = b.totalCO2Emission || b.orderCO2Emission || 0;
@@ -113,13 +106,13 @@ export default function UserResults() {
   });
 
     useEffect(() => {
-    handleNotifications(); // fetch on page load
+    handleNotifications(); 
   }, []);
   useEffect(() => {
     if (isNotifOpen && unreadCountState > 0) {
       api.post("/client-dashboard/notifications/mark-seen").then(() => {
         setUnreadCountState(0);
-        handleNotifications(); // refresh list
+        handleNotifications();
       });
     }
   }, [isNotifOpen]);
@@ -136,8 +129,8 @@ export default function UserResults() {
       }
     };
 
-    fetchUnreadCount(); // initial
-    const interval = setInterval(fetchUnreadCount, 5000); // every 5s
+    fetchUnreadCount(); 
+    const interval = setInterval(fetchUnreadCount, 10000); 
 
     return () => clearInterval(interval);
   }, []);
@@ -151,12 +144,11 @@ export default function UserResults() {
           <h2 className="text-4xl font-extrabold bg-gradient-to-r from-lime-600 via-green-600 to-emerald-700 bg-clip-text text-transparent">Calculation Results</h2>
           <div className="flex items-center gap-4">
             
-            {/* Notification Button */}
             <div className="relative">
               <button 
                 className="p-2 rounded-full hover:bg-gray-200 transition relative" 
                 onClick={() => {
-                    if(!isNotifOpen) handleNotifications(); // Fetch data when opening
+                    if(!isNotifOpen) handleNotifications(); 
                     setIsNotifOpen(!isNotifOpen);
                 }}
               >
@@ -186,7 +178,6 @@ export default function UserResults() {
               )}
             </div>
             
-            {/* Profile Button */}
             <div className="relative">
               <button className="p-2 rounded-full hover:bg-gray-200 transition" onClick={() => setIsProfileOpen(!isProfileOpen)}>
                 <span className="material-symbols-outlined text-gray-600 text-3xl">account_circle</span>
@@ -219,7 +210,6 @@ export default function UserResults() {
               </p>
             </div>
 
-            {/* --- VERTICAL EXPANDABLE LIST --- */}
             <div className="space-y-6">
               {sortedQuotes.map((quote, index) => {
                 const isSelected = selectedQuote === quote;
@@ -232,21 +222,18 @@ export default function UserResults() {
                 return (
                   <div 
                     key={index}
-                    // OLD: onClick={() => setSelectedQuote(quote)}
 
-                    // NEW: Toggle logic
                     onClick={() => {
                     if (selectedQuote === quote) {
-                        setSelectedQuote(null); // Deselect if already open
+                        setSelectedQuote(null); 
                     } else {
-                        setSelectedQuote(quote); // Select if closed
+                        setSelectedQuote(quote); 
                     }
                     }}
                     className={`border rounded-xl transition-all duration-300 bg-white/70 overflow-hidden
                       ${isSelected ? "ring-2 ring-emerald-500 shadow-md" : "hover:shadow-md border-gray-200 cursor-pointer"}
                     `}
                   >
-                    {/* Header Row (Always Visible) */}
                     <div className={`p-6 flex items-center justify-between ${isSelected ? 'bg-white/70' : ''}`}>
                       <div className="flex items-center gap-6">
                         
@@ -257,7 +244,6 @@ export default function UserResults() {
                           {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-white/70"></div>}
                         </div> */}
 
-                        {/* Summary Info */}
                         <div>
                           <div className="flex items-center gap-3 mb-1">
                             <h3 className="text-xl font-bold text-gray-800">
@@ -302,19 +288,16 @@ export default function UserResults() {
                         </div>
                       </div>
 
-                      {/* Expand/Collapse Icon */}
                       <span className="material-symbols-outlined text-gray-400">
                         {isSelected ? "expand_less" : "expand_more"}
                       </span>
                     </div>
 
-                    {/* Expanded Content (Map & Details) */}
                     {isSelected && (
                     <div 
                         className="border-t border-emerald-100 p-6 animate-in fade-in slide-in-from-top-2 duration-300 cursor-default"
                         onClick={(e) => e.stopPropagation()} 
                       >                        
-                        {/* THE MAP (Now huge and reliable) */}
                         <div className="w-full h-[400px] rounded-xl overflow-hidden border border-emerald-200 bg-emarald-50 shadow-inner mb-6 relative">
                           {quote.selectedPolyline ? (
                             <RouteMap encodedPolyline={quote.selectedPolyline} />
@@ -325,14 +308,13 @@ export default function UserResults() {
                           )}
                         </div>
 
-                        {/* Action Bar */}
                         <div className="flex justify-end items-center gap-4">
                           <span className="text-sm text-gray-500">
                             Selecting this route will place an order request.
                           </span>
                           <button 
                             onClick={(e) => {
-                              e.stopPropagation(); // Prevent toggling the card
+                              e.stopPropagation(); 
                               handlePlaceOrder();
                             }}
                             disabled={loading}
@@ -351,15 +333,12 @@ export default function UserResults() {
               })}
             </div>
 
-            {/* SUMMARY SECTION (Unchanged) */}
             <div className="pt-8 pb-10">
               <h2 className="text-xl font-semibold mb-4 text-gray-800">Shipment Summary</h2>
               
               <div className="bg-emerald-50 backdrop-blur-2xl rounded-3xl shadow-2xl border border-emerald-300 p-6">
-                {/* We use a definition list style grid for better alignment */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-gray-100">
                   
-                  {/* Column 1 */}
                   <div className="p-6 space-y-4">
                     <div>
                       <span className="block text-xs text-gray-400 uppercase font-bold tracking-wider mb-1">From</span>
@@ -371,7 +350,6 @@ export default function UserResults() {
                     </div>
                   </div>
 
-                  {/* Column 2 */}
                   <div className="p-6 space-y-4">
                     <div>
                       <span className="block text-xs text-gray-400 uppercase font-bold tracking-wider mb-1">Total Items</span>
@@ -383,7 +361,6 @@ export default function UserResults() {
                     </div>
                   </div>
 
-                  {/* Column 3 */}
                   <div className="p-6 space-y-4">
                      <div>
                       <span className="block text-xs text-gray-400 uppercase font-bold tracking-wider mb-1">Shipment Mode</span>
@@ -395,7 +372,6 @@ export default function UserResults() {
                     </div>
                   </div>
 
-                  {/* Column 4 */}
                   <div className="p-6 space-y-4">
                     <div>
                       <span className="block text-xs text-gray-400 uppercase font-bold tracking-wider mb-1">Dimensions</span>
@@ -410,7 +386,6 @@ export default function UserResults() {
                 </div>
               </div>
             </div>
-            {/* 🔽 ADD CONFIRM MODAL HERE */}
             {confirmAction && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
             <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 animate-in fade-in zoom-in-95">
@@ -424,7 +399,6 @@ export default function UserResults() {
                 ? "Confirm Sale"
                 : "Confirm Action"}
               </h3>
-              {/* BODY */}
               <p className="text-sm text-gray-600 mb-4">
                 {confirmAction.type === "buy" && (
                   <>You are about to <b>buy {confirmAction.payload.creditsListed}</b> creditsfrom <b>{confirmAction.payload.sellerCompanyName}</b>.</>
@@ -436,7 +410,6 @@ export default function UserResults() {
                       <>You are about to <b>log out</b> of your account.<br />
                       <span className="text-xs text-gray-500">You will need to log in again to access the dashboard.</span></>)}
                       </p>
-              {/* ACTIONS */}
               <div className="flex justify-end gap-3 pt-4 border-t">
                 <button
                 onClick={() => setConfirmAction(null)}

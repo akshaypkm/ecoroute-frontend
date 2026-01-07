@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "../Components/UserSideBar"; // Importing your new common Sidebar
+import Sidebar from "../Components/UserSideBar"; 
 import "../styles/UserDashboard.css";
 import api from "../api/api";
 
 export default function UserCarbonQuoteCalculator() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  // Toggle state for the methodology section
   const [showMethodology, setShowMethodology] = useState(false);
 
   const [transportProviders, setTransportProviders] = useState([]);
@@ -70,14 +69,16 @@ useEffect(() => {
   };
 
   const handleCalculate = async () => {
-    // Basic validation
     if (!mass || !origin || !destination) {
       alert("Please fill in all required fields (Mass, Origin, Destination).");
       return;
     }
 
-    if (date && new Date(date) < new Date("2025-01-01")) {
-    alert("Shipment date cannot be before January 1, 2025.");
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (date && new Date(date) < today) {
+    alert("Shipment date cannot be set before the current date.");
     return;
   }
 
@@ -112,11 +113,10 @@ useEffect(() => {
       const res = await api.post("/calculate-carbon-quote/calc", payload);
 
       if (res.status === 200 && res.data) {
-        // Redirect to results page and pass the data
         navigate("/quote-results", { 
           state: { 
-            quotes: res.data,   // The list of OrderDto returned by backend
-            request: payload    // The input data to display summary
+            quotes: res.data,   
+            request: payload    
           } 
         });
       }
@@ -130,7 +130,7 @@ useEffect(() => {
   };
 
     useEffect(() => {
-    handleNotifications(); // fetch on page load
+    handleNotifications(); 
   }, []);
   useEffect(() => {
     if (isNotifOpen && unreadCountState > 0) {
@@ -153,8 +153,8 @@ useEffect(() => {
       }
     };
 
-    fetchUnreadCount(); // initial
-    const interval = setInterval(fetchUnreadCount, 5000); // every 5s
+    fetchUnreadCount(); 
+    const interval = setInterval(fetchUnreadCount, 10000); 
 
     return () => clearInterval(interval);
   }, []);
@@ -162,28 +162,23 @@ useEffect(() => {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-lime-100 via-green-100 to-emerald-100 overflow-hidden">
-      {/* 1. Sidebar */}
       <Sidebar />
 
-      {/* 2. Main Content Area */}
-      {/* Added ml-64 (or typical sidebar width margin) if Sidebar is fixed, assuming Sidebar handles its own width or is 64/250px */}
+      
       <main className="flex-1 ml-0 md:ml-[250px] px-6 py-6 overflow-y-auto"> 
 
-        {/* Scrollable Content Area */}
         <div>
           <div className="space-y-6 max-w-7xl mx-auto">
-            {/* Top Header */}
         <header className="flex justify-between items-center mb-8">
           <h2 className="text-4xl font-extrabold bg-gradient-to-r from-lime-600 via-green-600 to-emerald-700 bg-clip-text text-transparent">Carbon Quote Calculator</h2>
           
           <div className="flex items-center gap-4">
             
-            {/* Notification Button */}
             <div className="relative">
               <button 
                 className="p-2 rounded-full hover:bg-gray-200 transition relative" 
                 onClick={() => {
-                    if(!isNotifOpen) handleNotifications(); // Fetch data when opening
+                    if(!isNotifOpen) handleNotifications(); 
                     setIsNotifOpen(!isNotifOpen);
                 }}
               >
@@ -213,7 +208,6 @@ useEffect(() => {
               )}
             </div>
             
-            {/* Profile Button */}
             <div className="relative">
               <button className="p-2 rounded-full hover:bg-gray-200 transition" onClick={() => setIsProfileOpen(!isProfileOpen)}>
                 <span className="material-symbols-outlined text-gray-600 text-3xl">account_circle</span>
@@ -238,7 +232,6 @@ useEffect(() => {
             </div>
           </div>
         </header>
-            {/* METHODOLOGY & STANDARDS SECTION */}
             <div className="bg-white/70 backdrop-blur-2xl border border-white/30 rounded-3xl shadow-2xl overflow-hidden w-full">
               <button
                 onClick={() => setShowMethodology(!showMethodology)}
@@ -259,7 +252,6 @@ useEffect(() => {
               {showMethodology && (
                 <div className="p-8 border-t border-gray-200 space-y-8 animate-in slide-in-from-top-2 text-sm">
                   
-                  {/* Section 1 */}
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div className="md:col-span-1">
                       <h4 className="font-bold text-gray-800 mb-1">Data Acquisition</h4>
@@ -280,7 +272,6 @@ useEffect(() => {
 
                   <hr className="border-gray-100" />
 
-                  {/* Section 2 */}
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div className="md:col-span-1">
                       <h4 className="font-bold text-gray-800 mb-1">Physics Engine</h4>
@@ -341,7 +332,6 @@ useEffect(() => {
 
                   <hr className="border-gray-100" />
 
-                  {/* Section 3 */}
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div className="md:col-span-1">
                       <h4 className="font-bold text-gray-800 mb-1">Carbon Standards</h4>
@@ -383,7 +373,6 @@ useEffect(() => {
 
                   <hr className="border-gray-100" />
 
-                  {/* Section 4 */}
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div className="md:col-span-1">
                       <h4 className="font-bold text-gray-800 mb-1">Selection Algorithm</h4>
@@ -409,10 +398,8 @@ useEffect(() => {
               <p className="text-gray-500 mt-1">Enter shipment details to estimate your carbon footprint.</p>
             </div>
 
-            {/* MAIN FORM CARD */}
             <div className="bg-white/70 backdrop-blur-2xl border border-white/30 rounded-3xl shadow-2xl p-8 space-y-10 w-full">
 
-              {/* Section 1: Shipment Details */}
               <div>
                 <h2 className="text-lg font-semibold text-green-700 flex items-center gap-2"><span className="material-symbols-outlined bg-gradient-to-r from-lime-500 to-emerald-600  bg-clip-text text-transparent">analytics</span>
                 Shipment Details</h2>
@@ -420,7 +407,6 @@ useEffect(() => {
                 <p className="text-gray-500 text-sm">Provide information about the overall shipment.</p>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-                  {/* Nature */}
                   <div>
                     <label className="text-sm font-medium text-gray-700">Nature of transport:</label>
                     <select
@@ -433,7 +419,6 @@ useEffect(() => {
                     </select>
                   </div>
 
-                  {/* Mode */}
                   <div>
                     <label className="text-sm font-medium text-gray-700">Mode of transport:</label>
                     <select
@@ -446,7 +431,6 @@ useEffect(() => {
                     </select>
                   </div>
 
-                  {/* Units */}
                   <div>
                     <label className="text-sm font-medium text-gray-700">Total units:</label>
                     <input
@@ -460,7 +444,6 @@ useEffect(() => {
                     />
                   </div>
 
-                  {/* Mass */}
                   <div>
                     <label className="text-sm font-medium text-gray-700">Total mass (kg):</label>
                     <input
@@ -474,7 +457,6 @@ useEffect(() => {
                     />
                   </div>
 
-                  {/* Shared/Dedicated */}
                   <div>
                     <label className="text-sm font-medium text-gray-700">Shared / Dedicated:</label>
                     <div className="flex gap-2 mt-1">
@@ -502,7 +484,6 @@ useEffect(() => {
                   </div>
                 </div>
 
-                {/* NEW: Dimensions Section (Required by Backend) */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
                    <div>
                     <label className="text-sm font-medium text-gray-700">Length (m):</label>
@@ -521,13 +502,11 @@ useEffect(() => {
 
               <hr className="border-gray-200" />
 
-              {/* Section 2: Product & Route */}
               <div>
                 <h2 className="text-lg font-semibold text-green-700 flex items-center gap-2">
                   <span className="material-symbols-outlined bg-gradient-to-r from-lime-500 to-emerald-600  bg-clip-text text-transparent">route</span>
                   Product and route information</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-                  {/* trans provider */}
                   <div>
                     <label className="text-sm font-medium text-gray-700">
                       Transport Provider
@@ -550,7 +529,6 @@ useEffect(() => {
 
                   </div>
 
-                  {/* Refrigerated */}
                   <div>
                     <label className="text-sm font-medium text-gray-700">If needs product refrigeration:</label>
                     <div className="flex gap-2 mt-1">
@@ -570,7 +548,6 @@ useEffect(() => {
                   </div>
                 </div>
 
-                {/* Route Inputs */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
                   <div>
                     <label className="text-sm font-medium text-gray-700">Origin:</label>
@@ -591,13 +568,11 @@ useEffect(() => {
                   <div>
                     <label className="text-sm font-medium text-gray-700">Date of shipment:</label>
                     <div className="relative mt-1">
-                      <input type="date" min = "2025-01-01" value={date} onChange={(e) => setDate(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none" />
+                      <input type="date" min={new Date().toISOString().split("T")[0]} value={date} onChange={(e) => setDate(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none" />
                     </div>
                   </div>
                 </div>
               </div>
-
-              {/* Submit Button */}
               <div className="flex justify-end pt-4">
                 <button 
                   onClick={handleCalculate}
@@ -611,7 +586,6 @@ useEffect(() => {
             </div>
             
           </div>
-          {/* 🔽 ADD CONFIRM MODAL HERE */}
           {confirmAction && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
             <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 animate-in fade-in zoom-in-95">
@@ -625,7 +599,6 @@ useEffect(() => {
                 ? "Confirm Sale"
                 : "Confirm Action"}
               </h3>
-              {/* BODY */}
               <p className="text-sm text-gray-600 mb-4">
                 {confirmAction.type === "buy" && (
                   <>You are about to <b>buy {confirmAction.payload.creditsListed}</b> creditsfrom <b>{confirmAction.payload.sellerCompanyName}</b>.</>
@@ -637,7 +610,6 @@ useEffect(() => {
                       <>You are about to <b>log out</b> of your account.<br />
                       <span className="text-xs text-gray-500">You will need to log in again to access the dashboard.</span></>)}
                       </p>
-              {/* ACTIONS */}
               <div className="flex justify-end gap-3 pt-4 border-t">
                 <button
                 onClick={() => setConfirmAction(null)}

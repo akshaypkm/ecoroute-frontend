@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// Fixed imports to match project structure (../../ assuming this is in src/pages/user/)
 import api from "../api/api";
-import Sidebar from "../Components/UserSideBar"; // Importing your new common Sidebar
+import Sidebar from "../Components/UserSideBar"; 
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -13,33 +12,25 @@ import {
   Legend,
 } from "chart.js";
 
-// Register ChartJS components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 export default function ClientDashboard() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
-  // --- Filters State ---
   const [emissionPeriod, setEmissionPeriod] = useState("Month");
   const [shipmentPeriod, setShipmentPeriod] = useState("Month");
   const [savingsPeriod, setSavingsPeriod] = useState("Past 12 months");
 
-  // --- UI State ---
   const [tradeSection, setTradeSection] = useState(null); // 'buy', 'sell', or null
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [sellAmount, setSellAmount] = useState("");
   const [confirmAction, setConfirmAction] = useState(null);
-// shape: { type: "buy" | "sell", payload: any }
 
   const [unreadCountState, setUnreadCountState] = useState(0);
 
 
-
-  
-
-  // --- Data State ---
   const [stats, setStats] = useState({
     totalEmissions: 0,
     shipments: 0,
@@ -66,7 +57,7 @@ export default function ClientDashboard() {
   100
 );
 
-let barColor = "bg-emerald-500"; // 0–50%
+let barColor = "bg-emerald-500"; 
 
 if (usagePercent > 50 && usagePercent <= 75) {
   barColor = "bg-yellow-400";
@@ -74,7 +65,6 @@ if (usagePercent > 50 && usagePercent <= 75) {
   barColor = "bg-red-500";
 }
 
-  // --- API Logic ---
   const fetchStats = async () => {
     try {
       const res = await api.get("/client-dashboard/stats", {
@@ -109,10 +99,8 @@ if (usagePercent > 50 && usagePercent <= 75) {
     } catch (err) { console.error(err); }
   };
 
-  // Re-fetch when filters change
   useEffect(() => { fetchStats(); }, [emissionPeriod, shipmentPeriod, savingsPeriod]);
 
-  // Initial load & Polling
   useEffect(() => {
     const fetchPrice = async () => {
       try {
@@ -126,7 +114,6 @@ if (usagePercent > 50 && usagePercent <= 75) {
     return () => clearInterval(interval);
   }, []);
 
-  // --- Handlers ---
   const handleSell = async () => {
     if (!sellAmount || parseFloat(sellAmount) <= 0) return alert("Enter valid amount");
     try {
@@ -159,20 +146,17 @@ if (usagePercent > 50 && usagePercent <= 75) {
     navigate("/");
   };
 
-  // --- Chart Config ---
   const labels = Array.from({ length: 12 }, (_, i) => {
     const d = new Date();
     d.setMonth(d.getMonth() - (11 - i));
     return d.toLocaleString("default", { month: "short" });
   });
   
-  // Map API graphData to Chart
   const chartData = {
     labels,
     datasets: [
       {
         label: "CO2e Emissions",
-        // Ensure data array has 12 elements, default to 0 if API returns less/null
         data: stats.graphData?.length > 0 ? stats.graphData : Array(12).fill(0),
         backgroundColor: "rgba(16, 185, 129, 0.7)",
         borderRadius: 6,
@@ -191,13 +175,13 @@ if (usagePercent > 50 && usagePercent <= 75) {
   };
 
   useEffect(() => {
-  handleNotifications(); // fetch on page load
+  handleNotifications(); 
 }, []);
 useEffect(() => {
   if (isNotifOpen && unreadCountState > 0) {
     api.post("/client-dashboard/notifications/mark-seen").then(() => {
       setUnreadCountState(0);
-      handleNotifications(); // refresh list
+      handleNotifications(); 
     });
   }
 }, [isNotifOpen]);
@@ -214,8 +198,8 @@ useEffect(() => {
     }
   };
 
-  fetchUnreadCount(); // initial
-  const interval = setInterval(fetchUnreadCount, 5000); // every 5s
+  fetchUnreadCount(); 
+  const interval = setInterval(fetchUnreadCount, 10000); 
 
   return () => clearInterval(interval);
 }, []);
@@ -225,26 +209,21 @@ useEffect(() => {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-lime-100 via-green-100 to-emerald-100 overflow-hidden">
       
-      {/* 1. Sidebar */}
       <Sidebar />
 
-      {/* 2. Main Content Area */}
-      {/* Added ml-64 (or typical sidebar width margin) if Sidebar is fixed, assuming Sidebar handles its own width or is 64/250px */}
       <main className="flex-1 ml-0 md:ml-[250px] px-6 py-6 overflow-y-auto"> 
         <div className="space-y-6 max-w-7xl mx-auto max-w-7xl mx-auto max-w-7xl mx-auto">
         
-        {/* Top Header (Preserved Functionality + New Style) */}
         <header className="flex justify-between items-center mb-8">
           <h2 className="text-4xl font-extrabold bg-gradient-to-r from-lime-600 via-green-600 to-emerald-700 bg-clip-text text-transparent">Dashboard</h2>
           
           <div className="flex items-center gap-4">
             
-            {/* Notification Button */}
             <div className="relative">
               <button 
                 className="p-2 rounded-full hover:bg-gray-200 transition relative" 
                 onClick={() => {
-                    if(!isNotifOpen) handleNotifications(); // Fetch data when opening
+                    if(!isNotifOpen) handleNotifications(); 
                     setIsNotifOpen(!isNotifOpen);
                 }}
               >
@@ -274,7 +253,6 @@ useEffect(() => {
               )}
             </div>
             
-            {/* Profile Button */}
             <div className="relative">
               <button className="p-2 rounded-full hover:bg-gray-200 transition" onClick={() => setIsProfileOpen(!isProfileOpen)}>
                 <span className="material-symbols-outlined text-gray-600 text-3xl">account_circle</span>
@@ -300,13 +278,10 @@ useEffect(() => {
           </div>
         </header>
 
-        {/* Content Grid */}
         <div className="space-y-6 max-w-7xl mx-auto max-w-7xl mx-auto">
           
-          {/* ---- TOP CARDS ---- */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
-            {/* Card 1: Emissions */}
             <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/30 p-6">
               <h2 className="text-lg font-semibold flex items-center gap-2 text-green-700">
                 <span className="material-symbols-outlined bg-gradient-to-r from-lime-500 to-emerald-600 bg-clip-text text-transparent">
@@ -331,7 +306,6 @@ useEffect(() => {
               </div>
             </div>
 
-            {/* Card 2: Shipments */}
             <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/30 p-6">
               <h2 className="text-lg font-semibold flex items-center gap-2 text-green-700">
                 <span className="material-symbols-outlined bg-gradient-to-r from-lime-500 to-emerald-600 bg-clip-text text-transparent">
@@ -356,7 +330,6 @@ useEffect(() => {
               </div>
             </div>
 
-            {/* Card 3: Emissions Credit System */}
             <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/30 p-6">
               <h2 className="text-lg font-semibold flex items-center gap-2 text-green-700">
                 <span className="material-symbols-outlined bg-gradient-to-r from-lime-500 to-emerald-600 bg-clip-text text-transparent">credit_score</span>
@@ -394,11 +367,9 @@ useEffect(() => {
                 </button>
               </div>
 
-              {/* Interaction Drawers */}
               {tradeSection && (
                 <div className="mt-4 pt-4 border-t animate-in fade-in slide-in-from-top-2">
                   
-                  {/* BUY TABLE */}
                   {tradeSection === 'buy' && (
                     <div>
                       <h4 className="text-sm font-bold text-gray-900 mb-2">Available Listings</h4>
@@ -439,7 +410,6 @@ useEffect(() => {
                     </div>
                   )}
 
-                  {/* SELL FORM */}
                   {tradeSection === 'sell' && (
                     <div>
                       <h4 className="text-sm font-bold text-gray-900 mb-2">Sell Credits</h4>
@@ -471,10 +441,8 @@ useEffect(() => {
             </div>
           </div>
 
-          {/* ---- MAIN CHART + SIDE CARDS ---- */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
-            {/* BAR CHART */}
             <div className="bg-white/60 backdrop-blur-2xl relative overflow-hidden border border-white/30 p-6 lg:col-span-2 rounded-3xl shadow-2xl">
               <h2 className="text-lg font-semibold flex items-center gap-2 text-green-700">
                 <span className="material-symbols-outlined bg-gradient-to-r from-lime-500 to-emerald-600 bg-clip-text text-transparent">bar_chart</span>
@@ -485,10 +453,8 @@ useEffect(() => {
               </div>
             </div>
 
-            {/* RIGHT SIDE CARDS */}
             <div className="space-y-6 max-w-7xl mx-auto max-w-7xl mx-auto">
               
-              {/* Budget Card */}
               <div className="bg-white/60 backdrop-blur-2xl relative overflow-hidden border border-white/30 p-6 rounded-3xl shadow-2xl">
                 <h2 className="text-lg font-semibold flex items-center gap-2 text-green-700">
                   <span className="material-symbols-outlined bg-gradient-to-r from-lime-500 to-emerald-600 bg-clip-text text-transparent">analytics</span>
@@ -501,7 +467,6 @@ useEffect(() => {
 
                 <p className="text-3xl font-bold mt-3 text-gray-900">{stats.totalForecastedEmissions.toFixed(2)} kg CO₂e</p>
 
-                {/* Progress Bar Logic: Assuming 1200 is cap */}
                 <div className="w-full h-2 bg-gray-200 rounded-full mt-3 overflow-hidden">
                   <div
                     className={`h-full ${barColor} rounded-full transition-all duration-500`}
@@ -514,7 +479,6 @@ useEffect(() => {
                 </p>
               </div>
 
-              {/* Emissions Saved */}
               <div className="bg-white/60 backdrop-blur-2xl relative overflow-hidden border border-white/30 p-6 rounded-3xl shadow-2xl">
                 <h2 className="text-lg font-semibold flex items-center gap-2 text-green-700">
                   <span className="material-symbols-outlined bg-gradient-to-r from-lime-500 to-emerald-600 bg-clip-text text-transparent">eco</span>
@@ -562,7 +526,6 @@ useEffect(() => {
                 ? "Confirm Sale"
                 : "Confirm Action"}
               </h3>
-              {/* BODY */}
               <p className="text-sm text-gray-600 mb-4">
                 {confirmAction.type === "buy" && (
                   <>You are about to <b>buy {confirmAction.payload.creditsListed}</b> creditsfrom <b>{confirmAction.payload.sellerCompanyName}</b>.</>
@@ -574,7 +537,6 @@ useEffect(() => {
                       <>You are about to <b>log out</b> of your account.<br />
                       <span className="text-xs text-gray-500">You will need to log in again to access the dashboard.</span></>)}
                       </p>
-              {/* ACTIONS */}
               <div className="flex justify-end gap-3 pt-4 border-t">
                 <button
                 onClick={() => setConfirmAction(null)}

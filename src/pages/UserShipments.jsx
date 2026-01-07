@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import api from "../api/api"; // Ensure axios instance is imported
-import Sidebar from "../Components/UserSideBar"; // Assuming you want the sidebar here too
+import api from "../api/api"; 
+import Sidebar from "../Components/UserSideBar"; 
 
 export default function UserShipments() {
 
@@ -11,7 +11,6 @@ export default function UserShipments() {
 
   const [loading, setLoading] = useState(true);
   const [shipments, setShipments] = useState([]);
-  //notification and logout 
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
@@ -36,26 +35,22 @@ export default function UserShipments() {
     navigate("/");
   };
   
-  // Backend Parameter State
-  const [orderPeriod, setOrderPeriod] = useState("month"); // 'month' or 'year'
+  const [orderPeriod, setOrderPeriod] = useState("month"); 
 
-  // Frontend Filter State
   const [filters, setFilters] = useState({
     status: "All Status",
     search: "",
   });
 
-  // --- 1. Fetch Data from Backend ---
   useEffect(() => {
     const fetchHistory = async () => {
       setLoading(true);
       try {
-        // Calls: public async Task<IActionResult> GetShipmentHistory([FromQuery] string OrderPeriod = "month", string Filter = "bySavings")
         const res = await api.get("/client-shipment-history", {
           params: {
             OrderPeriod: orderPeriod,
             Filter : "bySavings"
-             // Keeping default filter as per controller
+            
           }
         });
         setShipments(res.data);
@@ -67,13 +62,12 @@ export default function UserShipments() {
     };
 
     fetchHistory();
-  }, [orderPeriod]); // Refetch when period changes
+  }, [orderPeriod]); 
 
   useEffect(() => {
   setCurrentPage(1);
 }, [filters, orderPeriod]);
 
-  // --- 2. Handle Frontend Filtering ---
   const handleFilterChange = (e) => {
     setFilters((prev) => ({
       ...prev,
@@ -81,15 +75,12 @@ export default function UserShipments() {
     }));
   };
 
-  // Filter logic applied to the data fetched from API
   const filteredShipments = shipments.filter((s) => {
-    // 1. Status Filter
     const status = s.orderStatus || "Unknown"; 
     const matchStatus =
       filters.status === "All Status" || 
       status.toLowerCase() === filters.status.toLowerCase();
       
-    // 2. Search Filter (ID, Origin, Destination)
     const searchTerm = filters.search.toLowerCase();
     const matchSearch =
       filters.search.trim() === "" ||
@@ -107,7 +98,6 @@ export default function UserShipments() {
     currentPage * ITEMS_PER_PAGE
   );
 
-  // Helper for Status Colors
   const getStatusColor = (status) => {
     const s = status?.toLowerCase() || "";
     if (s === "placed" ) return "bg-emerald-100 text-emerald-600";
@@ -117,13 +107,11 @@ export default function UserShipments() {
     return "bg-gray-100 text-gray-600";
   };
 
-  // Helper for Mode Colors
   const getSavingsColor = (value) => {
   if (value <= 0) return "bg-red-100 text-red-600";
   if (value > 1) return "bg-green-100 text-green-600";
   return "bg-emerald-100 text-emerald-600";
 };
-  // Helper for Footprint Colors
   const getFootprintColor = (value) => {
     if (value < 2) return "text-emerald-600";
     if (value < 5) return "text-orange-500";
@@ -131,13 +119,13 @@ export default function UserShipments() {
   };
 
     useEffect(() => {
-    handleNotifications(); // fetch on page load
+    handleNotifications(); 
   }, []);
   useEffect(() => {
     if (isNotifOpen && unreadCountState > 0) {
       api.post("/api/client-dashboard/notifications/mark-seen").then(() => {
         setUnreadCountState(0);
-        handleNotifications(); // refresh list
+        handleNotifications(); 
       });
     }
   }, [isNotifOpen]);
@@ -154,8 +142,8 @@ export default function UserShipments() {
       }
     };
 
-    fetchUnreadCount(); // initial
-    const interval = setInterval(fetchUnreadCount, 5000); // every 5s
+    fetchUnreadCount(); 
+    const interval = setInterval(fetchUnreadCount, 10000); 
 
     return () => clearInterval(interval);
   }, []);
@@ -164,19 +152,17 @@ export default function UserShipments() {
     <div className="flex min-h-screen bg-gradient-to-br from-lime-100 via-green-100 to-emerald-100 overflow-hidden">
       <Sidebar />
 
-      {/* Main Content with margin for sidebar */}
       <main className="flex-1 ml-0 md:ml-[250px] px-6 py-6 overflow-y-auto">
         <div className="space-y-6 max-w-7xl mx-auto">
           <header className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-extrabold bg-gradient-to-r from-lime-600 via-green-600 to-emerald-700 bg-clip-text text-transparent">Shipment History</h1>
           <div className="flex items-center gap-4">
             
-            {/* Notification Button */}
             <div className="relative">
               <button 
                 className="p-2 rounded-full hover:bg-gray-200 transition relative" 
                 onClick={() => {
-                    if(!isNotifOpen) handleNotifications(); // Fetch data when opening
+                    if(!isNotifOpen) handleNotifications(); 
                     setIsNotifOpen(!isNotifOpen);
                 }}
               >
@@ -206,7 +192,6 @@ export default function UserShipments() {
               )}
             </div>
             
-            {/* Profile Button */}
             <div className="relative">
               <button className="p-2 rounded-full hover:bg-gray-200 transition" onClick={() => setIsProfileOpen(!isProfileOpen)}>
                 <span className="material-symbols-outlined text-gray-600 text-3xl">account_circle</span>
@@ -233,18 +218,14 @@ export default function UserShipments() {
           
           </header>
 
-          {/* SUB-HEADER */}
           <h2 className="text-2xl font-semibold text-center text-gray-700">
             Detailed Report of Shipment History
           </h2>
 
-          {/* MAIN CARD */}
           <div className="bg-white/70 backdrop-blur-2xl border border-white/30 rounded-3xl shadow-2xl p-8 space-y-10 w-full">
 
-            {/* --- Search & Filter Row --- */}
             <div className="flex flex-wrap items-center gap-4">
 
-              {/* Search box */}
               <div className="flex-1 min-w-[200px]">
                 <input
                   type="text"
@@ -257,7 +238,6 @@ export default function UserShipments() {
                 />
               </div>
 
-              {/* Backend Time Period Filter */}
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-gray-500">Period:</span>
                 <select 
@@ -272,7 +252,6 @@ export default function UserShipments() {
                 </select>
               </div>
 
-              {/* Frontend Status Filter */}
               <select
                 name="status"
                 value={filters.status}
@@ -289,7 +268,6 @@ export default function UserShipments() {
 
             </div>
 
-            {/* --- TABLE --- */}
             <div className="mt-6 overflow-x-auto rounded-2xl border border-emerald-100">
               <table className="min-w-full text-left text-sm text-gray-700">
                 <thead>
@@ -323,19 +301,16 @@ export default function UserShipments() {
                         <td className="text-gray-600">{row.orderTotalItems || row.unitCount || 0} units</td>
                         <td className="text-gray-600">{row.orderWeightKg || 0} kg</td>
 
-                        {/* Mode pill */}
                         <td>
                           <span className={`px-3 py-1 rounded-full text-xs font-medium ${getSavingsColor(row.orderEmissionsSaved)}`}>
                             {(row.orderEmissionsSaved.toFixed(2))} Kg CO₂e
                           </span>
                         </td>
 
-                        {/* Footprint */}
                         <td className={`font-semibold ${getFootprintColor(row.orderCO2Emission)}`}>
                           {row.orderCO2Emission ? row.orderCO2Emission.toFixed(2) : "0.00"} Kg CO₂e
                         </td>
 
-                        {/* Status */}
                         <td>
                           <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(row.orderStatus)}`}>
                             {row.orderStatus.toUpperCase() || "Pending"}
@@ -348,7 +323,6 @@ export default function UserShipments() {
               </table>
             </div>
 
-            {/* --- FOOTER TEXT --- */}
             <p className="text-sm text-gray-500 mt-4">
               Showing {paginatedShipments.length} of {filteredShipments.length} results
             </p>
@@ -377,24 +351,12 @@ export default function UserShipments() {
               </div>
             </div>
 
-            {/* --- Pagination (Visual Only for now) --- */}
-            {/* <div className="flex items-center justify-center gap-2 mt-4">
-              <button className="px-3 py-1 border rounded-lg bg-gray-50 text-gray-600 hover:bg-gray-100">{"<"}</button>
-              <button className="px-3 py-1 border rounded-lg bg-emerald-500 text-white">1</button>
-              <button className="px-3 py-1 border rounded-lg bg-gray-50 text-gray-600 hover:bg-gray-100">2</button>
-              <button className="px-3 py-1 border rounded-lg bg-gray-50 text-gray-600 hover:bg-gray-100">3</button>
-              <span className="px-3 py-1 border rounded-lg bg-gray-50 text-gray-400">...</span>
-              <button className="px-3 py-1 border rounded-lg bg-gray-50 text-gray-600 hover:bg-gray-100">{">"}</button>
-            </div> */}
-
           </div>
           
           </div>
-          {/* 🔽 ADD CONFIRM MODAL HERE */}
           {confirmAction && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
             <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 animate-in fade-in zoom-in-95">
-              {/* HEADER */}
               <h3 className="text-lg font-bold bg-gradient-to-r from-lime-600 via-green-600 to-emerald-700 bg-clip-text text-transparent mb-3">
                 {confirmAction.type === "logout"
                 ? "Confirm Logout"
@@ -404,7 +366,6 @@ export default function UserShipments() {
                 ? "Confirm Sale"
                 : "Confirm Action"}
               </h3>
-              {/* BODY */}
               <p className="text-sm text-gray-600 mb-4">
                 {confirmAction.type === "buy" && (
                   <>You are about to <b>buy {confirmAction.payload.creditsListed}</b> creditsfrom <b>{confirmAction.payload.sellerCompanyName}</b>.</>
@@ -416,7 +377,6 @@ export default function UserShipments() {
                       <>You are about to <b>log out</b> of your account.<br />
                       <span className="text-xs text-gray-500">You will need to log in again to access the dashboard.</span></>)}
                       </p>
-              {/* ACTIONS */}
               <div className="flex justify-end gap-3 pt-4 border-t">
                 <button
                 onClick={() => setConfirmAction(null)}
