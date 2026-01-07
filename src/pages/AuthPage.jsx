@@ -236,7 +236,7 @@ useEffect(() => {
             EcoRoute
           </h1>
           <p className="text-3xl opacity-90 text-center max-w-md">
-            Your Companion for Low-Carbon Travel Decisions
+            Turn emission awareness into daily logistics decisions.
           </p>
         </div>
       </div>

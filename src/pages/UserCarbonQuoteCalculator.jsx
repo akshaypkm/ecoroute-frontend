@@ -604,7 +604,7 @@ useEffect(() => {
                   disabled={loading}
                   className={`bg-gradient-to-r from-lime-500 via-green-500 to-emerald-600 text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2 transition-transform hover:scale-[1.03] shadow-sm ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
                 >
-                  {loading ? "Calculating..." : "Calculate Footprint"}
+                  {loading ? "Calculating..." : "Calculate Possible Routes"}
                   {!loading && <span className="material-symbols-outlined text-sm">arrow_forward</span>}
                 </button>
               </div>
